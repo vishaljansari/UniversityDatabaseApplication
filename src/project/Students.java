@@ -8,7 +8,15 @@ public class Students {
 	String stu_gender;
 	String degree_program;
 	
+	Projects projectId;
 	
+	
+	public Projects getProjectId() {
+		return projectId;
+	}
+	public void setProjectId(Projects projectId) {
+		this.projectId = projectId;
+	}
 	public String getStu_ssn() {
 		return stu_ssn;
 	}

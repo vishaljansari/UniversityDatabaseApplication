@@ -7,89 +7,72 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Servlet implementation class ViewStudents
+ */
 
-
-@WebServlet("/project/ViewProfessors")
-public class ViewProfessors extends HttpServlet {
+@WebServlet("/project/ViewStudents")
+public class ViewStudents extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-	ArrayList<Professors> professors;
-  
-    public ViewProfessors() {
+   
+    public ViewStudents() {
         super();
     }
-    
-    public void init(ServletConfig config) throws ServletException {
-    	
-    	@SuppressWarnings("unused")
-		ArrayList<Professors> professors = new ArrayList<Professors>();
-	}
-    
-   
+
+    ArrayList<Students> students;
+    ArrayList<Projects> projects;
 	
 	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+		
+		students= new ArrayList<Students>();
+		String project_number = request.getParameter("project_number");
+		System.out.println("id is :"+project_number);
+		
 		final String JDBC_DRIVER = "org.postgresql.Driver";
 		final String DB_URL = "jdbc:postgresql://localhost:5432/CS422-SUMMER2017";
-		
 		final String USER = "postgres";
 		final String PASS = "root";
-
-
+		projects=(ArrayList<Projects>) request.getSession().getAttribute("projects");
 		java.sql.Connection con = null;
 		java.sql.Statement stmt = null;
-		java.sql.Statement stmt1=null;
 		ResultSet rs;
-		ResultSet r;
 		
 		try {
 
-			 professors = new ArrayList<Professors>();
-			 
 			Class.forName(JDBC_DRIVER);
 			con = DriverManager.getConnection(DB_URL, USER, PASS);
 			stmt = con.createStatement();
-			stmt1 = con.createStatement();
 			String query = "";
-			query = "Select * from professors";	
+			query = "Select * from students";	
 			rs = stmt.executeQuery(query);
-			//
-			String query1="";
-			System.out.println("fffffffffffasdad");
-			//
 			while (rs.next()) {
-				query1 = "Select * from professors";	
-				r = stmt1.executeQuery(query1);
-				Professors p = new Professors();
-				p.setProf_ssn(rs.getString("prof_ssn"));
-				p.setProf_name(rs.getString("prof_name"));
-				p.setProf_age(rs.getString("prof_age"));
-				p.setProf_gender(rs.getString("prof_gender"));
-				p.setProf_rank(rs.getString("prof_rank"));
-				p.setSpeciality(rs.getString("speciality"));
-							
-				professors.add(p);
-	}
-
-	
-			
-			System.out.println("size is"+professors.size());
-			
+				Students s=new Students();
+				String pid =(String) rs.getObject("projectId");
+				if(project_number.equals(pid)){
+					s.setStu_ssn(rs.getString("stu_ssn"));
+					s.setStu_name(rs.getString("stu_name"));
+					s.setStu_age(rs.getString("stu_age"));
+					s.setStu_gender(rs.getString("stu_gender"));
+					s.setDegree_program(rs.getString("degree_program"));
+					
+					request.getSession().setAttribute("project_number", pid);
+					students.add(s);
+				}
+			}
 			stmt.close();
-			stmt1.close();
 			con.close();
-			
-			request.getSession().setAttribute("professors", professors);
-			RequestDispatcher patch=request.getRequestDispatcher("/WEB-INF/ViewProfessors.jsp");
-			patch.forward(request, response);
+			request.getSession().setAttribute("students", students);
+			//request.getSession().setAttribute("addresses", addresses);
+			request.getRequestDispatcher("/WEB-INF/ViewStudents.jsp")
+			.forward(request, response);
 			
 			
 		}catch (Exception e) {
@@ -118,15 +101,12 @@ public class ViewProfessors extends HttpServlet {
 			}
 
 		}
-
 		
 	}
 
-	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		
-		doGet(request, response);
+		// TODO Auto-generated method stub
+				doGet(request, response);
 	}
 
 }
