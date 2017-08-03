@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/project/ViewStudents")
 public class ViewStudents extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+    Projects p;
    
     public ViewStudents() {
         super();
@@ -41,6 +41,10 @@ public class ViewStudents extends HttpServlet {
 		final String USER = "postgres";
 		final String PASS = "root";
 		projects=(ArrayList<Projects>) request.getSession().getAttribute("projects");
+		
+		for ( Projects p: projects ) {
+			System.out.println(p + " : ");
+		}
 		java.sql.Connection con = null;
 		java.sql.Statement stmt = null;
 		ResultSet rs;
@@ -62,7 +66,6 @@ public class ViewStudents extends HttpServlet {
 					s.setStu_age(rs.getString("stu_age"));
 					s.setStu_gender(rs.getString("stu_gender"));
 					s.setDegree_program(rs.getString("degree_program"));
-					
 					request.getSession().setAttribute("project_number", pid);
 					students.add(s);
 				}
@@ -70,7 +73,7 @@ public class ViewStudents extends HttpServlet {
 			stmt.close();
 			con.close();
 			request.getSession().setAttribute("students", students);
-			//request.getSession().setAttribute("addresses", addresses);
+
 			request.getRequestDispatcher("/WEB-INF/ViewStudents.jsp")
 			.forward(request, response);
 			

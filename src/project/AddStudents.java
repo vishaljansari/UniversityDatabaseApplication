@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/project/AddStudents")
 public class AddStudents extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+    String project_number ="";   
     
     public AddStudents() {
         super();
@@ -24,7 +24,7 @@ public class AddStudents extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		
-		String project_number = request.getParameter("project_number");
+		project_number = request.getParameter("project_number");
 		System.out.println("ID is : "+project_number);
 		request.getSession().setAttribute("aId", project_number);
 		request.getRequestDispatcher("/WEB-INF/AddStudents.jsp")
@@ -32,10 +32,10 @@ public class AddStudents extends HttpServlet {
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		
-		String project_number = request.getParameter("project_number");
 		System.out.println("ssssssss :"+project_number);
 		String stu_ssn = request.getParameter("stu_ssn");
 		String stu_name = request.getParameter("stu_name");
@@ -74,7 +74,8 @@ public class AddStudents extends HttpServlet {
 			stmt2 = con.createStatement();
 			for (Projects project : projects) {
 				String id2 = project.getProject_number();
-				if(id2 == project_number){
+				if(id2.equals(project_number)){
+					System.out.println("entered");
 					Students s =new Students();
 					s.setProjectId(project);
 					s.setStu_ssn(stu_ssn);
@@ -82,6 +83,7 @@ public class AddStudents extends HttpServlet {
 					s.setStu_gender(stu_gender);
 					s.setStu_age(stu_age);
 					s.setDegree_program(degree_program);
+					s.setProjectId(project);
 					stmt2.executeUpdate("insert into students (stu_ssn,stu_name,stu_age,stu_gender,degree_program,projectId) values ('"+stu_ssn+"','"+stu_name+"','"+stu_age+"','"+stu_gender+"','"+degree_program+"','"+project_number+"')");
 					students.add(s);
 				}

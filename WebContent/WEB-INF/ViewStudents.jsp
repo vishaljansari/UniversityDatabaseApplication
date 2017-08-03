@@ -21,7 +21,7 @@
 <td>${s.stu_age}</td>
 <td>${s.stu_gender}</td>
 <td>${s.degree_program}</td>
-<td>${s.projectId.projectId}</td>
+<td> ${project_number} </td>
 <td><a href="RemoveStudents?id=${s.stu_ssn}&projectId=${param['id']}">Remove Student</a></td>
 </tr>
 </c:forEach>
